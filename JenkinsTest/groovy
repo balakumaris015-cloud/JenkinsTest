@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    tools {
+        jdk 'JDK17'
+        maven 'Maven3'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/yourname/springboot-jenkins-demo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'mvn clean package'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                bat '''
+                taskkill /F /IM java.exe || exit 0
+                start /B java -jar target/demo-0.0.1-SNAPSHOT.jar
+                '''
+            }
+        }
+    }
+}
